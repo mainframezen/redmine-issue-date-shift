@@ -14,11 +14,12 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
   def controller_issues_edit_before_save(context = { })
 
     Rails.logger.debug 'inside plugin---------------------------------------'
+    Rails.logger.debug context[:params].to_yaml
 
 
     old_date = context[:issue].read_attribute(:due_date) 
+    new_date = Date.parse ( context[:params][:issue][:due_date] )
 
-    new_date = Issue.find
 
     Rails.logger.debug old_date.to_s
     Rails.logger.debug new_date.to_s
