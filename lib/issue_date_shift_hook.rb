@@ -56,7 +56,7 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
             issue2_shift = 2
           end
           issue2.save
-          date_shift_days = date_shift_days + issue2_shift
+          date_shift_days = date_shift_days 
         end
 
       rescue ActiveRecord::RecordNotFound
