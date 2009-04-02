@@ -41,15 +41,20 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
           issue2.start_date = issue2.start_date + date_shift_days
           issue2_shift = 0
           if issue2.start_date.wday == 0 then
-            # shift to monday
             issue2.start_date = issue2.start_date + 1
             issue2_shift = 1
           elsif issue2.start_date.wday == 6 then
-            # shift to monday
             issue2.start_date = issue2.start_date + 2
             issue2_shift = 2
           end 
           issue2.due_date = issue2.due_date + date_shift_days + issue2_shift
+          if issue2.due_date.wday == 0 then
+            issue2.due_date = issue2.due_date + 1
+            issue2_shift = 1
+          elsif issue2.due_date.wday == 6 then
+            issue2.due_date = issue2.due_date + 2
+            issue2_shift = 2
+          end
           issue2.save
           date_shift_days = date_shift_days + issue2_shift
         end
