@@ -14,15 +14,11 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
   def controller_issues_edit_before_save(context = { })
 
     Rails.logger.debug 'inside plugin---------------------------------------'
-    Rails.logger.debug context[:params].to_yaml
 
+    present_issue = Issue.find( context[:issue].id)
+    old_date =  present_issue.due_date
 
-    old_date = context[:issue].read_attribute(:due_date) 
     new_date = Date.parse ( context[:params][:issue][:due_date] )
-
-
-    Rails.logger.debug old_date.to_s
-    Rails.logger.debug new_date.to_s
 
     if old_date === new_date then
       Rails.logger.debug 'no date changes'
@@ -31,7 +27,36 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
       Rails.logger.debug 'issue changed dates'
       
       date_shift_days = new_date - old_date
-      Rails.logger.debug "shifting #{date_shift_days} days"
+      Rails.logger.debug "shifting #{date_shift_days} days from date  #{old_date.to_s} "
+
+      begin
+        issues = Issue.find( 
+          :all, 
+          :conditions => "project_id = #{context[:issue].project_id} AND start_date > '#{old_date.to_s}'",
+          :order => "start_date ASC"
+        );
+
+        issues.each do | issue2 |
+          Rails.logger.debug "updating #{issue2.id}"
+          issue2.start_date = issue2.start_date + date_shift_days
+          issue2_shift = 0
+          if issue2.start_date.wday == 0 then
+            # shift to monday
+            issue2.start_date = issue2.start_date + 1
+            issue2_shift = 1
+          elsif issue2.start_date.wday == 6 then
+            # shift to monday
+            issue2.start_date = issue2.start_date + 2
+            issue2_shift = 2
+          end 
+          issue2.due_date = issue2.due_date + date_shift_days + issue2_shift
+          issue2.save
+          date_shift_days = date_shift_days + issue2_shift
+        end
+
+      rescue ActiveRecord::RecordNotFound
+        # cool, nothing to do
+      end
 
 
     end
