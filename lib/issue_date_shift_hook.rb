@@ -66,6 +66,7 @@ class IssueDataShiftHook  < Redmine::Hook::ViewListener
 
     end
 	
+# passou-se???
 
     Rails.logger.debug 'exiting plugin---------------------------------------'
 
