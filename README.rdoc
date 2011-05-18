@@ -1,12 +1,4 @@
-= issue_date_shift
+Abandoned plugin
 
-This plugin is called when editing an issue.
-
-The objective is to change the dates of issues that happen after the edited one, as if this is a predecessor of all of those.
-
-Imagine I have a task (A) that happens betweeen 1st April and April 3. Another task (B) happens from April 6 to April 9.
-This is year 2009. Just in case...
-
-Now my fellow co-worker tells me that task A will finish on April 7. What happens to task B?
-This plugin will make task B start on April 8 and finish April 13. There a weekend in there...
+Use this fork  https://github.com/midnightsnacks523/redmine-issue-date-shift
 
